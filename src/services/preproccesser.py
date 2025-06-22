@@ -5,6 +5,7 @@ import re
 import emoji
 import os
 import glob
+import json
 from etnltk import Amharic 
 
 class TextProcessor:
@@ -78,6 +79,10 @@ class TextProcessor:
         """Process a single CSV file"""
         input_path = os.path.join(self.raw_data_dir, input_csv_filename)
         output_path = os.path.join(self.processed_data_dir, output_csv_filename)
+        
+        # Create JSON output path by replacing .csv extension with .json
+        output_json_filename = output_csv_filename.replace('.csv', '.json')
+        output_json_path = os.path.join(self.processed_data_dir, output_json_filename)
 
         try:
             df = pd.read_csv(input_path)
@@ -130,14 +135,28 @@ class TextProcessor:
         # Combine metadata and processed text into a new DataFrame
         processed_df = pd.concat([metadata_df, df[['cleaned_message', 'tokens']]], axis=1)
 
-        # Save the preprocessed data
+        # Save the preprocessed data in both CSV and JSON formats
+        success_csv = False
+        success_json = False
+        
         try:
             processed_df.to_csv(output_path, index=False, encoding='utf-8-sig')
-            print(f"Preprocessed data successfully saved to: {output_path}")
-            return True
+            print(f"Preprocessed data successfully saved to CSV: {output_path}")
+            success_csv = True
         except Exception as e:
             print(f"Error saving preprocessed data to CSV: {e}")
-            return False
+        
+        try:
+            # Convert DataFrame to JSON with proper handling of lists (tokens)
+            json_data = processed_df.to_dict('records')
+            with open(output_json_path, 'w', encoding='utf-8') as json_file:
+                json.dump(json_data, json_file, ensure_ascii=False, indent=2)
+            print(f"Preprocessed data successfully saved to JSON: {output_json_path}")
+            success_json = True
+        except Exception as e:
+            print(f"Error saving preprocessed data to JSON: {e}")
+        
+        return success_csv or success_json
 
     def _preprocess_directory(self, message_column='message'):
         """Process all CSV files in the raw data directory"""
