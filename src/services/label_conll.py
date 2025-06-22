@@ -6,8 +6,8 @@ class CoNLLLabeler:
     def __init__(self, df, output_path, num_messages=50):
         """
         Args:
-            df (pd.DataFrame): Preprocessed messages with 'id', 'tokens', and 'cleaned_text'.
-            output_path (str): Full path to the output CoNLL file.
+            df (pd.DataFrame): Must include 'cleaned_message' column with Amharic text.
+            output_path (str): File path to save CoNLL-formatted labeled data.
             num_messages (int): Number of messages to label.
         """
         self.df = df
@@ -27,7 +27,7 @@ class CoNLLLabeler:
                 return 'skip'
             if label_input in self.valid_labels:
                 return label_input if label_input else 'o'
-            print(f"Invalid label. Use: {', '.join(self.valid_labels[:-1])} or 'o', 'skip', 'quit'.")
+            print(f"Invalid label. Use: {', '.join(self.valid_labels[:-1])} or 'o' (Enter), 'skip', 'quit'.")
 
     def _save_data(self):
         with open(self.output_path, 'w', encoding='utf-8') as f:
@@ -35,31 +35,37 @@ class CoNLLLabeler:
                 for line in sentence:
                     f.write(line + '\n')
                 f.write('\n')
-        print(f"\n✅ Labeled data saved to: {self.output_path}")
+        print(f"\n✅ Labeled data saved in CoNLL format to: {self.output_path}")
 
     def label_messages(self):
-        if self.df.empty:
-            print("❌ No data available for labeling.")
+        if self.df.empty or 'cleaned_message' not in self.df.columns:
+            print("❌ DataFrame must contain a 'cleaned_message' column.")
             return
 
-        print("\n--- Starting Interactive CoNLL Labeling ---")
-        print("Instructions: Label tokens as B-*, I-* or O. Use 'skip' to skip, 'quit' to stop.")
+        print("\n--- Starting CoNLL NER Labeling ---")
+        print("Label types: B-Product, I-Product, B-LOC, I-LOC, B-PRICE, I-PRICE, O")
+        print("Instructions:")
+        print("- Press Enter for 'O' (outside).")
+        print("- Type 'skip' to skip a message.")
+        print("- Type 'quit' to save and exit.")
         print("-" * 50)
 
         labeled_count = 0
+
         for _, row in self.df.iterrows():
             if labeled_count >= self.num_messages:
                 break
 
-            message_id = row.get('id')
-            tokens = row.get('tokens', [])
-            cleaned_text = row.get('cleaned_text', '')
-
-            if not tokens or not isinstance(tokens, list):
+            message_text = str(row.get('cleaned_message', '')).strip()
+            if not message_text:
                 continue
 
-            print(f"\n--- Message {labeled_count + 1} (ID: {message_id}) ---")
-            print(f"Cleaned Text: {cleaned_text}")
+            tokens = message_text.split()  # Basic whitespace tokenization
+            if not tokens:
+                continue
+
+            print(f"\n--- Message {labeled_count + 1} ---")
+            print(f"Cleaned Message: {message_text}")
             print(f"Tokens: {tokens}")
             print("-" * 30)
 
@@ -80,7 +86,7 @@ class CoNLLLabeler:
             if not skip:
                 self.labeled_data.append(current_labels)
                 labeled_count += 1
-                print(f"✅ Message {message_id} labeled. Total labeled: {labeled_count}")
+                print(f"✅ Message labeled. Total labeled so far: {labeled_count}")
 
         self._save_data()
-        print(f"🎉 You labeled a total of {labeled_count} messages.")
+        print(f"\n🎉 Finished! You labeled a total of {labeled_count} messages.")
