@@ -55,7 +55,7 @@ Amharic-E-commerce-Data-Extractor/
 ├── pyproject.toml
 └── .gitignore
 
-# Services Module Overview
+# Services Overview
 
 This directory contains the core scripts for data scraping, preprocessing, labeling, model training, and vendor analysis for Amharic e-commerce Telegram data.
 
