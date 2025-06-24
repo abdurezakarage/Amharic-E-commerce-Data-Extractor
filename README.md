@@ -1,4 +1,3 @@
-# Ethiopian E-commerce Data Extractor
 
 A comprehensive data ingestion and preprocessing system for Ethiopian Telegram e-commerce channels. This system collects, processes, and stores messages from multiple Ethiopian e-commerce Telegram channels with special handling for Amharic text.
 ## Project Structure
@@ -75,6 +74,4 @@ The notebooks directory contains Jupyter notebooks that demonstrate and support 
 3. Make your changes
 4. Add tests
 5. Submit a pull request
-
-
 
