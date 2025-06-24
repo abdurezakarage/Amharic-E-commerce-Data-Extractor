@@ -3,6 +3,7 @@
 A comprehensive data ingestion and preprocessing system for Ethiopian Telegram e-commerce channels. This system collects, processes, and stores messages from multiple Ethiopian e-commerce Telegram channels with special handling for Amharic text.
 ## Project Structure
 
+
 Amharic-E-commerce-Data-Extractor/
 ├── config/
 │   └── __init__.py
