@@ -15,7 +15,7 @@ Amharic-E-commerce-Data-Extractor/
 │       ├── telegram_data.csv
 │       └── photos/
 │           └── ... (downloaded images)
-│   └── README.md
+│       └── README.md
 ├── docs/
 ├── examples/
 │   └── __init__.py
@@ -58,6 +58,7 @@ Amharic-E-commerce-Data-Extractor/
 ├── Makefile
 ├── pyproject.toml
 └── .gitignore
+
 
 # Services Overview
 
