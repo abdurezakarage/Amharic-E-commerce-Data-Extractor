@@ -123,8 +123,7 @@ def run_comparison(conll_file):
         "xlm-roberta-base",
         "distilbert-base-multilingual-cased",
         "bert-base-multilingual-cased",
-        "Davlan/afroxlmr-base",
-        "Davlan/bert-base-amharic"
+        "Davlan/afro-xlmr-base"
     ]
 
     results = {}
